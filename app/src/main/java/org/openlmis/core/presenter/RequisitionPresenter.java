@@ -35,6 +35,8 @@ import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
 import org.roboguice.shaded.goole.common.base.Function;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import rx.Observable;
@@ -182,16 +184,17 @@ public class RequisitionPresenter implements Presenter {
     }
 
     private void setRnrFormAmount() {
-        ArrayList<RnRForm.RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
-        for (int i = 0; i < rnrFormItemListWrapper.size(); i++) {
+        Collection<RnRForm.RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
+        int i = 0;
+        for (Iterator<RnRForm.RnrFormItem> it = rnrFormItemListWrapper.iterator();  it.hasNext(); i++) {
             String requestAmount = requisitionFormItemViewModelList.get(i).getRequestAmount();
             if (!TextUtils.isEmpty(requestAmount)) {
-                rnrFormItemListWrapper.get(i).setRequestAmount(Long.valueOf(requestAmount));
+                it.next().setRequestAmount(Long.valueOf(requestAmount));
             }
 
             String approvedAmount = requisitionFormItemViewModelList.get(i).getApprovedAmount();
             if (!TextUtils.isEmpty(approvedAmount)) {
-                rnrFormItemListWrapper.get(i).setApprovedAmount(Long.valueOf(approvedAmount));
+                it.next().setApprovedAmount(Long.valueOf(approvedAmount));
             }
         }
     }

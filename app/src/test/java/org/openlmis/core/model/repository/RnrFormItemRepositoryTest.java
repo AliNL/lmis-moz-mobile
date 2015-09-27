@@ -34,8 +34,7 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldQueryListForLowStockByProductId() throws LMISException {
-
-        RnRForm form = new RnRForm();
+        RnRForm newFrom = rnrFormRepository.create(new RnRForm());
         List<RnRForm.RnrFormItem> rnrFormItemList = new ArrayList<>();
 
         Program program = new Program();
@@ -44,16 +43,13 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         product.setProgram(program);
         product.setId(1);
 
-        rnrFormItemList.add(getRnrFormItem(form, product, 1));
-        rnrFormItemList.add(getRnrFormItem(form, product, 2));
-        rnrFormItemList.add(getRnrFormItem(form, product, 3));
-        rnrFormItemList.add(getRnrFormItem(form, product, 0));
-        rnrFormItemList.add(getRnrFormItem(form, product, 5));
-        rnrFormItemList.add(getRnrFormItem(form, product, 7));
-
-        rnrFormItemRepository.create(rnrFormItemList);
-
-        rnrFormRepository.create(form);
+        rnrFormItemList.add(getRnrFormItem(newFrom, product, 1));
+        rnrFormItemList.add(getRnrFormItem(newFrom, product, 2));
+        rnrFormItemList.add(getRnrFormItem(newFrom, product, 3));
+        rnrFormItemList.add(getRnrFormItem(newFrom, product, 0));
+        rnrFormItemList.add(getRnrFormItem(newFrom, product, 5));
+        rnrFormItemList.add(getRnrFormItem(newFrom, product, 7));
+        newFrom.addItems(rnrFormItemList);
 
         List<RnRForm.RnrFormItem> rnrFormItemListFromDB = rnrFormItemRepository.queryListForLowStockByProductId(product);
 

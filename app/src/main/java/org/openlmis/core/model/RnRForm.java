@@ -24,11 +24,13 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +39,12 @@ import lombok.Setter;
 @Setter
 @DatabaseTable(tableName = "rnr_forms")
 public class RnRForm extends BaseModel {
+
+    public void addItems(List<RnrFormItem> rnrFormItemList) {
+        for (RnrFormItem item : rnrFormItemList) {
+            this.rnrFormItemList.add(item);
+        }
+    }
 
     public enum STATUS {
         DRAFT,
@@ -113,11 +121,8 @@ public class RnRForm extends BaseModel {
         return totalRegimenNumber;
     }
 
-    public ArrayList<RnrFormItem> getRnrFormItemListWrapper() {
-        if (rnrFormItemListWrapper == null) {
-            rnrFormItemListWrapper = new ArrayList(rnrFormItemList);
-        }
-        return rnrFormItemListWrapper;
+    public ForeignCollection<RnrFormItem> getRnrFormItemListWrapper() {
+        return this.getRnrFormItemList();
     }
 
     public ArrayList<BaseInfoItem> getBaseInfoItemListWrapper() {

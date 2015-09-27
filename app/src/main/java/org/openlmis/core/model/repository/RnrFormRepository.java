@@ -23,6 +23,7 @@ import android.content.Context;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.misc.TransactionManager;
 
 import org.openlmis.core.exceptions.LMISException;
@@ -85,25 +86,32 @@ public class RnrFormRepository {
         }
         final RnRForm form = RnRForm.init(program, DateUtil.today());
         try {
-            TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<Object>() {
+            return TransactionManager.callInTransaction(LmisSqliteOpenHelper.getInstance(context).getConnectionSource(), new Callable<RnRForm>() {
                 @Override
-                public Object call() throws Exception {
+                public RnRForm call() throws Exception {
                     create(form);
-                    createRnrFormItems(generateRnrFormItems(form));
+                    form.addItems(generateRnrFormItems(form));
                     createRegimenItems(generateRegimeItems(form));
                     createBaseInfoItems(generateBaseInfoItems(form));
                     genericDao.refresh(form);
-                    return null;
+                    return form;
                 }
             });
         } catch (SQLException e) {
             throw new LMISException(e);
         }
-        return form;
+//        return form;
     }
 
-    protected void create(RnRForm rnRForm) throws LMISException {
-        genericDao.create(rnRForm);
+    public RnRForm create(final RnRForm rnRForm) throws LMISException {
+        return dbUtil.withDao(RnRForm.class, new DbUtil.Operation<RnRForm, RnRForm>() {
+            @Override
+            public RnRForm operate(Dao<RnRForm, String> dao) throws SQLException {
+                dao.create(rnRForm);
+                dao.assignEmptyForeignCollection(rnRForm, "rnrFormItemList");
+                return rnRForm;
+            }
+        });
     }
 
     public void save(final RnRForm form) throws LMISException {
@@ -208,10 +216,6 @@ public class RnrFormRepository {
     public void approve(RnRForm form) throws LMISException {
         form.setStatus(RnRForm.STATUS.AUTHORIZED);
         genericDao.update(form);
-    }
-
-    private void createRnrFormItems(List<RnRForm.RnrFormItem> form) throws LMISException {
-        rnrFormItemRepository.create(form);
     }
 
     public void createRegimenItems(final List<Regimen.RegimenItem> regimenItemList) throws LMISException {
@@ -324,6 +328,7 @@ public class RnrFormRepository {
 
     public void removeRnrForm(RnRForm form) throws LMISException {
         if (form != null) {
+
             deleteRnrFormItems(form.getRnrFormItemListWrapper());
             deleteRegimenItems(form.getRegimenItemListWrapper());
             deleteBaseInfoItems(form.getBaseInfoItemListWrapper());
@@ -355,8 +360,16 @@ public class RnrFormRepository {
         });
     }
 
-    private void deleteRnrFormItems(final List<RnRForm.RnrFormItem> rnrFormItemListWrapper) throws LMISException {
-        rnrFormItemRepository.delete(rnrFormItemListWrapper);
+    private void deleteRnrFormItems(final ForeignCollection<RnRForm.RnrFormItem> rnrFormItemListWrapper) throws LMISException {
+        dbUtil.withDaoAsBatch(RnRForm.RnrFormItem.class, new DbUtil.Operation<RnRForm.RnrFormItem, Void>() {
+            @Override
+            public Void operate(Dao<RnRForm.RnrFormItem, String> dao) throws SQLException {
+                for (RnRForm.RnrFormItem item : rnrFormItemListWrapper) {
+                    dao.delete(item);
+                }
+                return null;
+            }
+        });
     }
 
     public static class RnrFormItemRepository {
@@ -376,30 +389,6 @@ public class RnrFormRepository {
                 @Override
                 public List<RnRForm.RnrFormItem> operate(Dao<RnRForm.RnrFormItem, String> dao) throws SQLException {
                     return dao.queryBuilder().orderBy("id", false).limit(3L).where().eq("product_id", product.getId()).and().ne("inventory", 0).query();
-                }
-            });
-        }
-
-        public void create(final List<RnRForm.RnrFormItem> rnrFormItemList) throws LMISException {
-            dbUtil.withDaoAsBatch(RnRForm.RnrFormItem.class, new DbUtil.Operation<RnRForm.RnrFormItem, Void>() {
-                @Override
-                public Void operate(Dao<RnRForm.RnrFormItem, String> dao) throws SQLException {
-                    for (RnRForm.RnrFormItem item : rnrFormItemList) {
-                        dao.create(item);
-                    }
-                    return null;
-                }
-            });
-        }
-
-        public void delete(final List<RnRForm.RnrFormItem> rnrFormItemListWrapper) throws LMISException {
-            dbUtil.withDaoAsBatch(RnRForm.RnrFormItem.class, new DbUtil.Operation<RnRForm.RnrFormItem, Void>() {
-                @Override
-                public Void operate(Dao<RnRForm.RnrFormItem, String> dao) throws SQLException {
-                    for (RnRForm.RnrFormItem item : rnrFormItemListWrapper) {
-                        dao.delete(item);
-                    }
-                    return null;
                 }
             });
         }

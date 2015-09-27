@@ -19,6 +19,7 @@
 package org.openlmis.core.model.repository;
 
 import com.google.inject.AbstractModule;
+import com.j256.ormlite.dao.ForeignCollection;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +38,7 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import roboguice.RoboGuice;
@@ -64,7 +66,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     public void setup() throws LMISException {
         mockStockRepository = mock(StockRepository.class);
         mockProgramRepository = mock(ProgramRepository.class);
-        mockRnrFormRepository = mock(RnrFormRepository.class);
+        mockRnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);;
         mockProductRepository = mock(ProductRepository.class);
 
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
@@ -123,7 +125,10 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         RnRForm form = MMIARepository.initMMIA(program);
         assertThat(form.getRnrFormItemList().size(), is(24));
 
-        RnRForm.RnrFormItem item = form.getRnrFormItemListWrapper().get(1);
+        ForeignCollection<RnRForm.RnrFormItem> rnrFormItemListWrapper = form.getRnrFormItemListWrapper();
+        Iterator<RnRForm.RnrFormItem> iterator = rnrFormItemListWrapper.iterator();
+        iterator.next();
+        RnRForm.RnrFormItem item = iterator.next();
         assertThat(item.getReceived(), is(25L));
         assertThat(item.getIssued(), is(20L));
     }
@@ -174,8 +179,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         RnRForm rnRForm = new RnRForm();
         rnRForm.setProgram(program);
-
-        when(mockRnrFormRepository.initRnrForm(program)).thenReturn(rnRForm);
+        mockRnrFormRepository.create(rnRForm);
 
         RnRForm rnRFormTest = MMIARepository.initMMIA(program);
 
