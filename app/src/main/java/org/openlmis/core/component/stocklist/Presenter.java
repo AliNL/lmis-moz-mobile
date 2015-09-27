@@ -22,9 +22,7 @@ package org.openlmis.core.component.stocklist;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
 
@@ -41,9 +39,6 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
 
     @Inject
     StockRepository stockRepository;
-
-    @Inject
-    RnrFormRepository.RnrFormItemRepository rnrFormItemRepository;
 
     StockCardListView view;
 
@@ -122,31 +117,4 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
         void refresh();
     }
 
-    public int getStockOnHandLevel(StockCard stockCard) {
-        int lowStockAvg = getLowStockAvg(stockCard);
-        long stockOnHand = stockCard.getStockOnHand();
-        if (stockOnHand > lowStockAvg) {
-            return STOCK_ON_HAND_NORMAL;
-        } else if (stockOnHand > 0) {
-            return STOCK_ON_HAND_LOW_STOCK;
-        } else {
-            return STOCK_ON_HAND_STOCK_OUT;
-        }
-    }
-
-    private int getLowStockAvg(StockCard stockCard) {
-        try {
-            List<RnRForm.RnrFormItem> rnrFormItemList = rnrFormItemRepository.queryListForLowStockByProductId(stockCard.getProduct());
-            long total = 0;
-            for (RnRForm.RnrFormItem item : rnrFormItemList) {
-                total += item.getIssued();
-            }
-            if (rnrFormItemList.size() > 0) {
-                return (int) Math.ceil((total / rnrFormItemList.size()) * 0.05);
-            }
-        } catch (LMISException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
 }

@@ -113,7 +113,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     private void initStockOnHand(ViewHolder holder, final StockCard stockCard) {
         holder.stockOnHand.setText(stockCard.getStockOnHand() + "");
 
-        int stockOnHandLevel = presenter.getStockOnHandLevel(stockCard);
+        int stockOnHandLevel = stockCard.getStockOnHandLevel();
         String warningMsg = null;
         switch (stockOnHandLevel) {
             case Presenter.STOCK_ON_HAND_LOW_STOCK:

@@ -125,7 +125,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         RnRForm form = MMIARepository.initMMIA(program);
         assertThat(form.getRnrFormItemList().size(), is(24));
 
-        ForeignCollection<RnRForm.RnrFormItem> rnrFormItemListWrapper = form.getRnrFormItemListWrapper();
+        ForeignCollection<RnRForm.RnrFormItem> rnrFormItemListWrapper = form.getRnrFormItemList();
         Iterator<RnRForm.RnrFormItem> iterator = rnrFormItemListWrapper.iterator();
         iterator.next();
         RnRForm.RnrFormItem item = iterator.next();
@@ -183,6 +183,6 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         RnRForm rnRFormTest = MMIARepository.initMMIA(program);
 
-        assertThat(rnRFormTest.getRnrFormItemListWrapper().size(), is(24));
+        assertThat(rnRFormTest.getRnrFormItemList().size(), is(24));
     }
 }

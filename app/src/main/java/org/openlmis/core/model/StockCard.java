@@ -26,6 +26,8 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.openlmis.core.component.stocklist.Presenter;
+import org.openlmis.core.exceptions.LMISException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,6 +62,34 @@ public class StockCard extends BaseModel{
             return stringList.get(0);
         }
         return null;
+    }
+
+    public int getLowStockAvg() {
+        try {
+            List<RnRForm.RnrFormItem> rnrFormItemList = getProduct().queryListForLowStockByProductId();
+            long total = 0;
+            for (RnRForm.RnrFormItem item : rnrFormItemList) {
+                total += item.getIssued();
+            }
+            if (rnrFormItemList.size() > 0) {
+                return (int) Math.ceil((total / rnrFormItemList.size()) * 0.05);
+            }
+        } catch (LMISException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getStockOnHandLevel() {
+        int lowStockAvg = getLowStockAvg();
+        long stockOnHand = getStockOnHand();
+        if (stockOnHand > lowStockAvg) {
+            return Presenter.STOCK_ON_HAND_NORMAL;
+        } else if (stockOnHand > 0) {
+            return Presenter.STOCK_ON_HAND_LOW_STOCK;
+        } else {
+            return Presenter.STOCK_ON_HAND_STOCK_OUT;
+        }
     }
 
     @Getter

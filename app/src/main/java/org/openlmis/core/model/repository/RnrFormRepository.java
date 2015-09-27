@@ -29,7 +29,6 @@ import com.j256.ormlite.misc.TransactionManager;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RnRForm;
@@ -60,9 +59,6 @@ public class RnrFormRepository {
 
     @Inject
     RegimenRepository regimenRepository;
-
-    @Inject
-    RnrFormItemRepository rnrFormItemRepository;
 
     @Inject
     ProgramRepository programRepository;
@@ -156,7 +152,7 @@ public class RnrFormRepository {
 
 
     public void updateWrapperList(RnRForm form) throws SQLException {
-        for (RnRForm.RnrFormItem item : form.getRnrFormItemListWrapper()) {
+        for (RnRForm.RnrFormItem item : form.getRnrFormItemList()) {
             form.getRnrFormItemList().update(item);
         }
         for (Regimen.RegimenItem item : form.getRegimenItemListWrapper()) {
@@ -329,7 +325,7 @@ public class RnrFormRepository {
     public void removeRnrForm(RnRForm form) throws LMISException {
         if (form != null) {
 
-            deleteRnrFormItems(form.getRnrFormItemListWrapper());
+            deleteRnrFormItems(form.getRnrFormItemList());
             deleteRegimenItems(form.getRegimenItemListWrapper());
             deleteBaseInfoItems(form.getBaseInfoItemListWrapper());
             genericDao.delete(form);
@@ -370,27 +366,5 @@ public class RnrFormRepository {
                 return null;
             }
         });
-    }
-
-    public static class RnrFormItemRepository {
-        GenericDao<RnRForm.RnrFormItem> genericDao;
-
-        @Inject
-        DbUtil dbUtil;
-
-
-        @Inject
-        public RnrFormItemRepository(Context context) {
-            this.genericDao = new GenericDao<>(RnRForm.RnrFormItem.class, context);
-        }
-
-        public List<RnRForm.RnrFormItem> queryListForLowStockByProductId(final Product product) throws LMISException {
-            return dbUtil.withDao(RnRForm.RnrFormItem.class, new DbUtil.Operation<RnRForm.RnrFormItem, List<RnRForm.RnrFormItem>>() {
-                @Override
-                public List<RnRForm.RnrFormItem> operate(Dao<RnRForm.RnrFormItem, String> dao) throws SQLException {
-                    return dao.queryBuilder().orderBy("id", false).limit(3L).where().eq("product_id", product.getId()).and().ne("inventory", 0).query();
-                }
-            });
-        }
     }
 }

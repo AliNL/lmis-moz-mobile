@@ -125,7 +125,7 @@ public class MMIAActivity extends BaseActivity implements MMIAFormPresenter.MMIA
         final boolean isDraft = form.getStatus().equals(RnRForm.STATUS.DRAFT);
 
         scrollView.setVisibility(View.VISIBLE);
-        rnrFormList.initView(new ArrayList<>(form.getRnrFormItemListWrapper()));
+        rnrFormList.initView(new ArrayList<>(form.getRnrFormItemList()));
         regimeListView.initView(form.getRegimenItemListWrapper(), tvRegimeTotal);
         mmiaInfoListView.initView(form.getBaseInfoItemListWrapper());
 

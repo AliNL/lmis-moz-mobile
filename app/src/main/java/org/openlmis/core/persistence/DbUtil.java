@@ -25,12 +25,18 @@ import com.google.inject.Inject;
 import com.j256.ormlite.android.AndroidConnectionSource;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
+import com.j256.ormlite.table.ObjectFactory;
 
 
 import org.openlmis.core.exceptions.LMISException;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.concurrent.Callable;
+
+import roboguice.RoboGuice;
+import roboguice.inject.RoboInjector;
 
 import static com.j256.ormlite.dao.DaoManager.createDao;
 
@@ -39,7 +45,7 @@ public class DbUtil {
     @Inject
     private Context context;
 
-    public static <T> Dao<T, String> initialiseDao(SQLiteOpenHelper openHelper, Class<T> domainClass) throws SQLException {
+    public <T> Dao<T, String> initialiseDao(SQLiteOpenHelper openHelper, Class<T> domainClass) throws SQLException {
         ConnectionSource connectionSource;
         if (openHelper instanceof LmisSqliteOpenHelper) {
             LmisSqliteOpenHelper helper = (LmisSqliteOpenHelper) openHelper;
@@ -47,7 +53,28 @@ public class DbUtil {
         } else {
             connectionSource = new AndroidConnectionSource(openHelper);
         }
-        return createDao(connectionSource, domainClass);
+        Dao<T, String> dao = createDao(connectionSource, domainClass);
+        dao.setObjectFactory(new ObjectFactory<T>() {
+            @Override
+            public T createObject(Constructor<T> construcor, Class<T> dataClass) throws SQLException {
+                RoboInjector injector = RoboGuice.getInjector(context);
+                try {
+                    T t = construcor.newInstance();
+                    injector.injectMembers(t);
+                    return t;
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException();
+                }
+            }
+        });
+        return dao;
     }
 
     public <DomainType, ReturnType> ReturnType withDao(

@@ -1,4 +1,4 @@
-package org.openlmis.core.model.repository;
+package org.openlmis.core.model;
 
 import android.support.annotation.NonNull;
 
@@ -11,6 +11,8 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
+import org.openlmis.core.model.repository.ProductRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -22,14 +24,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(LMISTestRunner.class)
-public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
-    RnrFormRepository.RnrFormItemRepository rnrFormItemRepository;
+public class ProductTest extends LMISRepositoryUnitTest {
     private RnrFormRepository rnrFormRepository;
+    private ProductRepository productRepository;
 
     @Before
     public void setUp() throws LMISException {
-        rnrFormItemRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.RnrFormItemRepository.class);
         rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
+        productRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(ProductRepository.class);
+
     }
 
     @Test
@@ -43,6 +46,8 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         product.setProgram(program);
         product.setId(1);
 
+        productRepository.create(product);
+
         rnrFormItemList.add(getRnrFormItem(newFrom, product, 1));
         rnrFormItemList.add(getRnrFormItem(newFrom, product, 2));
         rnrFormItemList.add(getRnrFormItem(newFrom, product, 3));
@@ -51,7 +56,7 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
         rnrFormItemList.add(getRnrFormItem(newFrom, product, 7));
         newFrom.addItems(rnrFormItemList);
 
-        List<RnRForm.RnrFormItem> rnrFormItemListFromDB = rnrFormItemRepository.queryListForLowStockByProductId(product);
+        List<RnRForm.RnrFormItem> rnrFormItemListFromDB = productRepository.getById(1).queryListForLowStockByProductId();
 
         assertThat(rnrFormItemListFromDB.size(), is(3));
 

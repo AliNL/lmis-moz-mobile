@@ -184,7 +184,7 @@ public class RequisitionPresenter implements Presenter {
     }
 
     private void setRnrFormAmount() {
-        Collection<RnRForm.RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
+        Collection<RnRForm.RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemList();
         int i = 0;
         for (Iterator<RnRForm.RnrFormItem> it = rnrFormItemListWrapper.iterator();  it.hasNext(); i++) {
             String requestAmount = requisitionFormItemViewModelList.get(i).getRequestAmount();

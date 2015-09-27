@@ -57,8 +57,6 @@ public class RnRForm extends BaseModel {
     @ForeignCollectionField()
     private ForeignCollection<RnrFormItem> rnrFormItemList;
 
-    private ArrayList<RnrFormItem> rnrFormItemListWrapper;
-
     @ForeignCollectionField()
     private ForeignCollection<Regimen.RegimenItem> regimenItemList;
 
@@ -119,10 +117,6 @@ public class RnRForm extends BaseModel {
         }
 
         return totalRegimenNumber;
-    }
-
-    public ForeignCollection<RnrFormItem> getRnrFormItemListWrapper() {
-        return this.getRnrFormItemList();
     }
 
     public ArrayList<BaseInfoItem> getBaseInfoItemListWrapper() {

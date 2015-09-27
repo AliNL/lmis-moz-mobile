@@ -21,17 +21,15 @@ package org.openlmis.core.component.stocklist;
 
 import android.support.annotation.NonNull;
 
-import com.google.inject.AbstractModule;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.repository.RnrFormRepository;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -51,13 +49,8 @@ public class PresenterTest {
 
     private Presenter presenter;
 
-    RnrFormRepository.RnrFormItemRepository rnrFormItemRepositoryMock;
-
     @Before
     public void setup() {
-        rnrFormItemRepositoryMock = mock(RnrFormRepository.RnrFormItemRepository.class);
-        RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
-
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(Presenter.class);
     }
 
@@ -70,12 +63,14 @@ public class PresenterTest {
         rnrFormItemList.add(getRnrFormItem(issued));
         rnrFormItemList.add(getRnrFormItem(issued));
 
-        when(rnrFormItemRepositoryMock.queryListForLowStockByProductId(any(Product.class))).thenReturn(rnrFormItemList);
+        Product product = Mockito.mock(Product.class);
+        when(product.queryListForLowStockByProductId()).thenReturn(rnrFormItemList);
 
         StockCard stockCard = new StockCard();
+        stockCard.setProduct(product);
         stockCard.setStockOnHand(100);
 
-        int stockOnHandLevel = presenter.getStockOnHandLevel(stockCard);
+        int stockOnHandLevel = stockCard.getStockOnHandLevel();
 
         assertThat(stockOnHandLevel, is(Presenter.STOCK_ON_HAND_NORMAL));
 
@@ -90,12 +85,14 @@ public class PresenterTest {
         rnrFormItemList.add(getRnrFormItem(issued));
         rnrFormItemList.add(getRnrFormItem(issued));
 
-        when(rnrFormItemRepositoryMock.queryListForLowStockByProductId(any(Product.class))).thenReturn(rnrFormItemList);
+        Product product = Mockito.mock(Product.class);
+        when(product.queryListForLowStockByProductId()).thenReturn(rnrFormItemList);
 
         StockCard stockCard = new StockCard();
+        stockCard.setProduct(product);
         stockCard.setStockOnHand(2);
 
-        int stockOnHandLevel = presenter.getStockOnHandLevel(stockCard);
+        int stockOnHandLevel = stockCard.getStockOnHandLevel();
 
         assertThat(stockOnHandLevel, is(Presenter.STOCK_ON_HAND_LOW_STOCK));
     }
@@ -109,12 +106,14 @@ public class PresenterTest {
         rnrFormItemList.add(getRnrFormItem(issued));
         rnrFormItemList.add(getRnrFormItem(issued));
 
-        when(rnrFormItemRepositoryMock.queryListForLowStockByProductId(any(Product.class))).thenReturn(rnrFormItemList);
+        Product product = Mockito.mock(Product.class);
+        when(product.queryListForLowStockByProductId()).thenReturn(rnrFormItemList);
 
         StockCard stockCard = new StockCard();
+        stockCard.setProduct(product);
         stockCard.setStockOnHand(0);
 
-        int stockOnHandLevel = presenter.getStockOnHandLevel(stockCard);
+        int stockOnHandLevel = stockCard.getStockOnHandLevel();
 
         assertThat(stockOnHandLevel, is(Presenter.STOCK_ON_HAND_STOCK_OUT));
     }
@@ -125,12 +124,5 @@ public class PresenterTest {
         rnrFormItem.setInventory(10);
         rnrFormItem.setIssued(issued);
         return rnrFormItem;
-    }
-
-    public class MyTestModule extends AbstractModule {
-        @Override
-        protected void configure() {
-            bind(RnrFormRepository.RnrFormItemRepository.class).toInstance(rnrFormItemRepositoryMock);
-        }
     }
 }
