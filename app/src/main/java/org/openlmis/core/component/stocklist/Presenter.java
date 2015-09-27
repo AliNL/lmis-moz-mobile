@@ -24,7 +24,7 @@ import com.google.inject.Inject;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.repository.RnrFormItemRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
 
@@ -43,7 +43,7 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
     StockRepository stockRepository;
 
     @Inject
-    RnrFormItemRepository rnrFormItemRepository;
+    RnrFormRepository.RnrFormItemRepository rnrFormItemRepository;
 
     StockCardListView view;
 

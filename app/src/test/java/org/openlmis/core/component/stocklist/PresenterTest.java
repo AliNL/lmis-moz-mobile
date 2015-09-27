@@ -31,7 +31,7 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.repository.RnrFormItemRepository;
+import org.openlmis.core.model.repository.RnrFormRepository;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -51,11 +51,11 @@ public class PresenterTest {
 
     private Presenter presenter;
 
-    RnrFormItemRepository rnrFormItemRepositoryMock;
+    RnrFormRepository.RnrFormItemRepository rnrFormItemRepositoryMock;
 
     @Before
     public void setup() {
-        rnrFormItemRepositoryMock = mock(RnrFormItemRepository.class);
+        rnrFormItemRepositoryMock = mock(RnrFormRepository.RnrFormItemRepository.class);
         RoboGuice.overrideApplicationInjector(RuntimeEnvironment.application, new MyTestModule());
 
         presenter = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(Presenter.class);
@@ -130,7 +130,7 @@ public class PresenterTest {
     public class MyTestModule extends AbstractModule {
         @Override
         protected void configure() {
-            bind(RnrFormItemRepository.class).toInstance(rnrFormItemRepositoryMock);
+            bind(RnrFormRepository.RnrFormItemRepository.class).toInstance(rnrFormItemRepositoryMock);
         }
     }
 }

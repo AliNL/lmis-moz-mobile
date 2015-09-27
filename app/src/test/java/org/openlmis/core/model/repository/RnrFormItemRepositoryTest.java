@@ -23,12 +23,12 @@ import static org.hamcrest.core.Is.is;
 
 @RunWith(LMISTestRunner.class)
 public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
-    RnrFormItemRepository rnrFormItemRepository;
+    RnrFormRepository.RnrFormItemRepository rnrFormItemRepository;
     private RnrFormRepository rnrFormRepository;
 
     @Before
     public void setUp() throws LMISException {
-        rnrFormItemRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormItemRepository.class);
+        rnrFormItemRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.RnrFormItemRepository.class);
         rnrFormRepository = RoboGuice.getInjector(RuntimeEnvironment.application).getInstance(RnrFormRepository.class);
     }
 
