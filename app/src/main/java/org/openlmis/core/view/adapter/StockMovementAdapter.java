@@ -35,7 +35,6 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.openlmis.core.R;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.presenter.StockMovementPresenter;
 import org.openlmis.core.utils.DateUtil;
 import org.openlmis.core.utils.SimpleTextWatcher;
@@ -144,7 +143,7 @@ public class StockMovementAdapter extends BaseAdapter {
             setReasonAndFontColor(holder, model);
         }
 
-        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
+        if (model.getReceived() != null || model.getMovementType() == StockCard.StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
             setFontColorToRed(holder);
         }
 
@@ -265,26 +264,26 @@ public class StockMovementAdapter extends BaseAdapter {
             @Override
             public void onReceive() {
                 setEditTextEnableAndRecoverUnderline(editableLine.etReceived);
-                getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.RECEIVE);
+                getDraftStockMovementItem().setMovementType(StockCard.StockMovementItem.MovementType.RECEIVE);
             }
 
             @Override
             public void onIssue() {
                 setEditTextEnableAndRecoverUnderline(editableLine.etIssued);
-                getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.ISSUE);
+                getDraftStockMovementItem().setMovementType(StockCard.StockMovementItem.MovementType.ISSUE);
             }
 
             @Override
             public void onPositiveAdjustment() {
                 setEditTextEnableAndRecoverUnderline(editableLine.etPositiveAdjustment);
-                getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+                getDraftStockMovementItem().setMovementType(StockCard.StockMovementItem.MovementType.POSITIVE_ADJUST);
 
             }
 
             @Override
             public void onNegativeAdjustment() {
                 setEditTextEnableAndRecoverUnderline(editableLine.etNegativeAdjustment);
-                getDraftStockMovementItem().setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+                getDraftStockMovementItem().setMovementType(StockCard.StockMovementItem.MovementType.NEGATIVE_ADJUST);
             }
 
             @Override

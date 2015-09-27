@@ -27,7 +27,6 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -75,7 +74,7 @@ public class StockMovementPresenterTest extends LMISRepositoryUnitTest {
         when(stockRepositoryMock.queryStockCardById(123)).thenReturn(stockCard);
         stockMovementPresenter.setStockCard(123);
 
-        StockMovementItem item = new StockMovementItem();
+        StockCard.StockMovementItem item = new StockCard.StockMovementItem();
 
         StockMovementViewModel viewModel = mock(StockMovementViewModel.class);
         when(viewModel.validateInputValid()).thenReturn(true);

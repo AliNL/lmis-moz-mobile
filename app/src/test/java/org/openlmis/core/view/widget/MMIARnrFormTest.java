@@ -10,7 +10,7 @@ import org.openlmis.core.LMISRepositoryUnitTest;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.view.activity.MMIAActivity;
 import org.robolectric.Robolectric;
 
@@ -32,7 +32,7 @@ public class MMIARnrFormTest  extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldSortByType() throws Exception {
-        ArrayList<RnrFormItem> list = new ArrayList<>();
+        ArrayList<RnRForm.RnrFormItem> list = new ArrayList<>();
 
         list.add(getRnrFormItem(1L, "product", "08S17", Product.MEDICINE_TYPE_OTHER));
         list.add(getRnrFormItem(2L, "product2", "08S32Z", Product.MEDICINE_TYPE_BABY));
@@ -60,8 +60,8 @@ public class MMIARnrFormTest  extends LMISRepositoryUnitTest {
         assertThat(text3, is(list.get(0).getProduct().getPrimaryName()));
     }
 
-    private RnrFormItem getRnrFormItem(long id, String primaryName, String code, String medicineType) {
-        RnrFormItem item = new RnrFormItem();
+    private RnRForm.RnrFormItem getRnrFormItem(long id, String primaryName, String code, String medicineType) {
+        RnRForm.RnrFormItem item = new RnRForm.RnrFormItem();
         Product product = new Product();
         product.setId(id);
         product.setPrimaryName(primaryName);

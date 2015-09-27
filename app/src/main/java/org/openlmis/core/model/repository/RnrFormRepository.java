@@ -29,11 +29,9 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.persistence.DbUtil;
 import org.openlmis.core.persistence.GenericDao;
 import org.openlmis.core.persistence.LmisSqliteOpenHelper;
@@ -68,14 +66,14 @@ public class RnrFormRepository {
     ProgramRepository programRepository;
 
     GenericDao<RnRForm> genericDao;
-    GenericDao<RnrFormItem> rnrFormItemGenericDao;
+    GenericDao<RnRForm.RnrFormItem> rnrFormItemGenericDao;
 
     private Context context;
 
     @Inject
     public RnrFormRepository(Context context) {
         genericDao = new GenericDao<>(RnRForm.class, context);
-        rnrFormItemGenericDao = new GenericDao<>(RnrFormItem.class, context);
+        rnrFormItemGenericDao = new GenericDao<>(RnRForm.RnrFormItem.class, context);
         this.context = context;
     }
 
@@ -149,10 +147,10 @@ public class RnrFormRepository {
 
 
     public void updateWrapperList(RnRForm form) throws SQLException {
-        for (RnrFormItem item : form.getRnrFormItemListWrapper()) {
+        for (RnRForm.RnrFormItem item : form.getRnrFormItemListWrapper()) {
             form.getRnrFormItemList().update(item);
         }
-        for (RegimenItem item : form.getRegimenItemListWrapper()) {
+        for (Regimen.RegimenItem item : form.getRegimenItemListWrapper()) {
             form.getRegimenItemList().update(item);
         }
         for (BaseInfoItem item : form.getBaseInfoItemListWrapper()) {
@@ -211,15 +209,15 @@ public class RnrFormRepository {
         genericDao.update(form);
     }
 
-    private void createRnrFormItems(List<RnrFormItem> form) throws LMISException {
+    private void createRnrFormItems(List<RnRForm.RnrFormItem> form) throws LMISException {
         rnrFormItemRepository.create(form);
     }
 
-    public void createRegimenItems(final List<RegimenItem> regimenItemList) throws LMISException {
-        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
+    public void createRegimenItems(final List<Regimen.RegimenItem> regimenItemList) throws LMISException {
+        dbUtil.withDao(Regimen.RegimenItem.class, new DbUtil.Operation<Regimen.RegimenItem, Void>() {
             @Override
-            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
-                for (RegimenItem item : regimenItemList) {
+            public Void operate(Dao<Regimen.RegimenItem, String> dao) throws SQLException {
+                for (Regimen.RegimenItem item : regimenItemList) {
                     dao.create(item);
                 }
                 return null;
@@ -244,7 +242,7 @@ public class RnrFormRepository {
         return null;
     }
 
-    protected List<RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
+    protected List<RnRForm.RnrFormItem> generateRnrFormItems(final RnRForm form) throws LMISException {
         List<StockCard> stockCards = FluentIterable.from(stockRepository.list(form.getProgram().getProgramCode())).filter(new Predicate<StockCard>() {
             @Override
             public boolean apply(StockCard stockCard) {
@@ -252,25 +250,25 @@ public class RnrFormRepository {
             }
         }).toList();
 
-        List<RnrFormItem> rnrFormItems = new ArrayList<>();
+        List<RnRForm.RnrFormItem> rnrFormItems = new ArrayList<>();
 
         for (StockCard stockCard : stockCards) {
-            RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(), form.getPeriodEnd());
+            RnRForm.RnrFormItem rnrFormItem = createRnrFormItemByPeriod(stockCard, form.getPeriodBegin(), form.getPeriodEnd());
             rnrFormItem.setForm(form);
             rnrFormItems.add(rnrFormItem);
         }
         return rnrFormItems;
     }
 
-    private RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
-        List<StockMovementItem> stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
+    private RnRForm.RnrFormItem createRnrFormItemByPeriod(StockCard stockCard, Date startDate, Date endDate) throws LMISException {
+        List<StockCard.StockMovementItem> stockMovementItems = stockRepository.queryStockItems(stockCard, startDate, endDate);
 
-        RnrFormItem rnrFormItem = new RnrFormItem();
+        RnRForm.RnrFormItem rnrFormItem = new RnRForm.RnrFormItem();
         if (!stockMovementItems.isEmpty()) {
 
-            StockMovementItem firstItem = stockMovementItems.get(0);
-            if (firstItem.getMovementType() == StockMovementItem.MovementType.ISSUE
-                    || firstItem.getMovementType() == StockMovementItem.MovementType.NEGATIVE_ADJUST) {
+            StockCard.StockMovementItem firstItem = stockMovementItems.get(0);
+            if (firstItem.getMovementType() == StockCard.StockMovementItem.MovementType.ISSUE
+                    || firstItem.getMovementType() == StockCard.StockMovementItem.MovementType.NEGATIVE_ADJUST) {
 
                 rnrFormItem.setInitialAmount(firstItem.getStockOnHand() + firstItem.getMovementQuantity());
             } else {
@@ -281,14 +279,14 @@ public class RnrFormRepository {
             long totalIssued = 0;
             long totalAdjustment = 0;
 
-            for (StockMovementItem item : stockMovementItems) {
-                if (StockMovementItem.MovementType.RECEIVE == item.getMovementType()) {
+            for (StockCard.StockMovementItem item : stockMovementItems) {
+                if (StockCard.StockMovementItem.MovementType.RECEIVE == item.getMovementType()) {
                     totalReceived += item.getMovementQuantity();
-                } else if (StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
+                } else if (StockCard.StockMovementItem.MovementType.ISSUE == item.getMovementType()) {
                     totalIssued += item.getMovementQuantity();
-                } else if (StockMovementItem.MovementType.NEGATIVE_ADJUST == item.getMovementType()) {
+                } else if (StockCard.StockMovementItem.MovementType.NEGATIVE_ADJUST == item.getMovementType()) {
                     totalAdjustment -= item.getMovementQuantity();
-                } else if (StockMovementItem.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
+                } else if (StockCard.StockMovementItem.MovementType.POSITIVE_ADJUST == item.getMovementType()) {
                     totalAdjustment += item.getMovementQuantity();
                 }
             }
@@ -319,7 +317,7 @@ public class RnrFormRepository {
         return rnrFormItem;
     }
 
-    protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
+    protected List<Regimen.RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
         return new ArrayList<>();
     }
 
@@ -344,11 +342,11 @@ public class RnrFormRepository {
         });
     }
 
-    private void deleteRegimenItems(final ArrayList<RegimenItem> regimenItemListWrapper) throws LMISException {
-        dbUtil.withDao(RegimenItem.class, new DbUtil.Operation<RegimenItem, Void>() {
+    private void deleteRegimenItems(final ArrayList<Regimen.RegimenItem> regimenItemListWrapper) throws LMISException {
+        dbUtil.withDao(Regimen.RegimenItem.class, new DbUtil.Operation<Regimen.RegimenItem, Void>() {
             @Override
-            public Void operate(Dao<RegimenItem, String> dao) throws SQLException {
-                for (RegimenItem item : regimenItemListWrapper) {
+            public Void operate(Dao<Regimen.RegimenItem, String> dao) throws SQLException {
+                for (Regimen.RegimenItem item : regimenItemListWrapper) {
                     dao.delete(item);
                 }
                 return null;
@@ -356,7 +354,7 @@ public class RnrFormRepository {
         });
     }
 
-    private void deleteRnrFormItems(final List<RnrFormItem> rnrFormItemListWrapper) throws LMISException {
+    private void deleteRnrFormItems(final List<RnRForm.RnrFormItem> rnrFormItemListWrapper) throws LMISException {
         rnrFormItemRepository.delete(rnrFormItemListWrapper);
     }
 }

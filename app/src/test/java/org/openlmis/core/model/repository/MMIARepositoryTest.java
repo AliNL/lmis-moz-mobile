@@ -29,11 +29,9 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.utils.DateUtil;
 import org.robolectric.RuntimeEnvironment;
 
@@ -105,16 +103,16 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
 
         stockCard.setCreatedAt(RnRForm.init(program, DateUtil.today()).getPeriodEnd());
 
-        ArrayList<StockMovementItem> stockMovementItems = new ArrayList<>();
+        ArrayList<StockCard.StockMovementItem> stockMovementItems = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            StockMovementItem stockMovementItem = new StockMovementItem();
+            StockCard.StockMovementItem stockMovementItem = new StockCard.StockMovementItem();
             stockMovementItem.setStockOnHand(100);
             stockMovementItem.setMovementQuantity(i);
             stockMovementItem.setStockCard(stockCard);
             if (i % 2 == 0) {
-                stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
+                stockMovementItem.setMovementType(StockCard.StockMovementItem.MovementType.ISSUE);
             } else {
-                stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+                stockMovementItem.setMovementType(StockCard.StockMovementItem.MovementType.RECEIVE);
             }
             stockMovementItems.add(stockMovementItem);
         }
@@ -125,7 +123,7 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
         RnRForm form = MMIARepository.initMMIA(program);
         assertThat(form.getRnrFormItemList().size(), is(24));
 
-        RnrFormItem item = form.getRnrFormItemListWrapper().get(1);
+        RnRForm.RnrFormItem item = form.getRnrFormItemListWrapper().get(1);
         assertThat(item.getReceived(), is(25L));
         assertThat(item.getIssued(), is(20L));
     }
@@ -144,10 +142,10 @@ public class MMIARepositoryTest extends LMISRepositoryUnitTest {
     @Test
     public void shouldSaveSuccess() throws Exception {
         RnRForm initForm = MMIARepository.initMMIA(program);
-        ArrayList<RegimenItem> regimenItemListWrapper = initForm.getRegimenItemListWrapper();
+        ArrayList<Regimen.RegimenItem> regimenItemListWrapper = initForm.getRegimenItemListWrapper();
 
         for (int i = 0; i < regimenItemListWrapper.size(); i++) {
-            RegimenItem item = regimenItemListWrapper.get(i);
+            Regimen.RegimenItem item = regimenItemListWrapper.get(i);
             item.setAmount((long) i);
         }
 

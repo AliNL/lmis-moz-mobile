@@ -29,9 +29,7 @@ import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,11 +75,11 @@ public class MMIARepository extends RnrFormRepository {
     }
 
     @Override
-    protected List<RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
+    protected List<Regimen.RegimenItem> generateRegimeItems(RnRForm form) throws LMISException {
         List<Regimen> regimens = regimenRepository.list();
-        List<RegimenItem> regimenItems = new ArrayList<>();
+        List<Regimen.RegimenItem> regimenItems = new ArrayList<>();
         for (Regimen regimen : regimens) {
-            RegimenItem item = new RegimenItem();
+            Regimen.RegimenItem item = new Regimen.RegimenItem();
             item.setForm(form);
             item.setRegimen(regimen);
             regimenItems.add(item);
@@ -123,17 +121,17 @@ public class MMIARepository extends RnrFormRepository {
     }
 
     @Override
-    protected List<RnrFormItem> generateRnrFormItems(RnRForm form) throws LMISException {
-        List<RnrFormItem> rnrFormItems = super.generateRnrFormItems(form);
+    protected List<RnRForm.RnrFormItem> generateRnrFormItems(RnRForm form) throws LMISException {
+        List<RnRForm.RnrFormItem> rnrFormItems = super.generateRnrFormItems(form);
 
         List<Product> products = productRepository.queryProducts(programRepository.queryByCode(MMIA_PROGRAM_CODE).getId());
-        ArrayList<RnrFormItem> result = new ArrayList<>();
+        ArrayList<RnRForm.RnrFormItem> result = new ArrayList<>();
 
         for (Product product : products) {
-            RnrFormItem rnrFormItem = new RnrFormItem();
+            RnRForm.RnrFormItem rnrFormItem = new RnRForm.RnrFormItem();
             rnrFormItem.setForm(form);
             rnrFormItem.setProduct(product);
-            for (RnrFormItem item : rnrFormItems) {
+            for (RnRForm.RnrFormItem item : rnrFormItems) {
                 if (item.getProduct().getId() == product.getId()) {
                     rnrFormItem = item;
                 }

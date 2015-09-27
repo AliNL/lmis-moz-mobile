@@ -18,7 +18,7 @@
 
 package org.openlmis.core.view.viewmodel;
 
-import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.RnRForm;
 
 import lombok.Data;
 
@@ -38,7 +38,7 @@ public class RequisitionFormItemViewModel {
     private String requestAmount;
     private String approvedAmount;
 
-    public RequisitionFormItemViewModel(RnrFormItem item) {
+    public RequisitionFormItemViewModel(RnRForm.RnrFormItem item) {
 
         this.fmn = (item.getProduct().getCode());
         this.productName = item.getProduct().getPrimaryName();

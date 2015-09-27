@@ -33,7 +33,6 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.RnRForm;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ import java.util.ArrayList;
 public class MMIARegimeList extends LinearLayout {
     private Context context;
     private TextView totalView;
-    private ArrayList<RegimenItem> dataList;
+    private ArrayList<Regimen.RegimenItem> dataList;
     private ArrayList<EditText> editTexts = new ArrayList<>();
     private LayoutInflater layoutInflater;
     private boolean hasDataChanged = false;
@@ -62,13 +61,13 @@ public class MMIARegimeList extends LinearLayout {
         layoutInflater = LayoutInflater.from(context);
     }
 
-    public void initView(ArrayList<RegimenItem> regimenItems, TextView totalView) {
+    public void initView(ArrayList<Regimen.RegimenItem> regimenItems, TextView totalView) {
         this.dataList = regimenItems;
         this.totalView = totalView;
         addHeaderView();
 
         for (int i = 0; i < dataList.size(); i++) {
-            RegimenItem item = dataList.get(i);
+            Regimen.RegimenItem item = dataList.get(i);
             if (item != null) {
                 addItemView(item, i);
             }
@@ -77,7 +76,7 @@ public class MMIARegimeList extends LinearLayout {
         totalView.setText(String.valueOf(getTotal()));
     }
 
-    public ArrayList<RegimenItem> getDataList() {
+    public ArrayList<Regimen.RegimenItem> getDataList() {
         return dataList;
     }
 
@@ -85,11 +84,11 @@ public class MMIARegimeList extends LinearLayout {
         addItemView(null, true, 0);
     }
 
-    private void addItemView(final RegimenItem item, int position) {
+    private void addItemView(final Regimen.RegimenItem item, int position) {
         addItemView(item, false, position);
     }
 
-    private void addItemView(final RegimenItem item, boolean isHeaderView, final int position) {
+    private void addItemView(final Regimen.RegimenItem item, boolean isHeaderView, final int position) {
         View view = layoutInflater.inflate(R.layout.item_regime, this, false);
         TextView tvName = (TextView) view.findViewById(R.id.tv_name);
         EditText etTotal = (EditText) view.findViewById(R.id.et_total);
@@ -143,9 +142,9 @@ public class MMIARegimeList extends LinearLayout {
 
     class EditTextWatcher implements android.text.TextWatcher {
 
-        private final RegimenItem item;
+        private final Regimen.RegimenItem item;
 
-        public EditTextWatcher(RegimenItem item) {
+        public EditTextWatcher(Regimen.RegimenItem item) {
             this.item = item;
         }
 

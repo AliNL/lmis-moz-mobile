@@ -20,6 +20,7 @@ package org.openlmis.core.model;
 
 
 import com.j256.ormlite.dao.ForeignCollection;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -61,4 +62,39 @@ public class StockCard extends BaseModel{
         return null;
     }
 
+    @Getter
+    @Setter
+    @DatabaseTable(tableName = "stock_items")
+    public static class StockMovementItem extends BaseModel{
+
+        public enum MovementType {
+            RECEIVE,
+            ISSUE,
+            POSITIVE_ADJUST,
+            NEGATIVE_ADJUST,
+            PHYSICAL_INVENTORY
+        }
+
+        @DatabaseField
+        String documentNumber;
+
+        @DatabaseField
+        long movementQuantity;
+
+        @DatabaseField
+        String reason;
+
+        @DatabaseField
+        MovementType movementType;
+
+        @DatabaseField(foreign = true, foreignAutoRefresh = true)
+        StockCard stockCard;
+
+        @DatabaseField
+        long stockOnHand = -1;
+
+        @DatabaseField(canBeNull = false, dataType = DataType.DATE_STRING, format = "yyyy-MM-dd")
+        private java.util.Date movementDate;
+
+    }
 }

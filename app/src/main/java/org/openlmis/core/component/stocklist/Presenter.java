@@ -22,7 +22,7 @@ package org.openlmis.core.component.stocklist;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.openlmis.core.model.repository.StockRepository;
@@ -136,9 +136,9 @@ public class Presenter implements org.openlmis.core.presenter.Presenter {
 
     private int getLowStockAvg(StockCard stockCard) {
         try {
-            List<RnrFormItem> rnrFormItemList = rnrFormItemRepository.queryListForLowStockByProductId(stockCard.getProduct());
+            List<RnRForm.RnrFormItem> rnrFormItemList = rnrFormItemRepository.queryListForLowStockByProductId(stockCard.getProduct());
             long total = 0;
-            for (RnrFormItem item : rnrFormItemList) {
+            for (RnRForm.RnrFormItem item : rnrFormItemList) {
                 total += item.getIssued();
             }
             if (rnrFormItemList.size() > 0) {

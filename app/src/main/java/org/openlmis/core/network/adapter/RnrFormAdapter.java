@@ -28,9 +28,8 @@ import com.google.gson.JsonSerializer;
 
 import org.openlmis.core.manager.UserInfoMgr;
 import org.openlmis.core.model.BaseInfoItem;
-import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.VIARepository;
 
@@ -63,9 +62,9 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
         return root;
     }
 
-    private JsonArray serializeProductItems(Iterable<RnrFormItem> productItems, String programCode){
+    private JsonArray serializeProductItems(Iterable<RnRForm.RnrFormItem> productItems, String programCode){
         JsonArray products = new JsonArray();
-        for (RnrFormItem item : productItems){
+        for (RnRForm.RnrFormItem item : productItems){
             JsonObject product = new JsonObject();
             product.addProperty("productCode", item.getProduct().getCode());
             product.addProperty("beginningBalance", item.getInitialAmount());
@@ -83,9 +82,9 @@ public class RnrFormAdapter implements JsonSerializer<RnRForm> {
         return products;
     }
 
-    private JsonArray serializeRegimens(Iterable<RegimenItem> regimenItems){
+    private JsonArray serializeRegimens(Iterable<Regimen.RegimenItem> regimenItems){
         JsonArray regimens = new JsonArray();
-        for (RegimenItem item : regimenItems){
+        for (Regimen.RegimenItem item : regimenItems){
             JsonObject regimenItem = new JsonObject();
             regimenItem.addProperty("code", item.getRegimen().getCode());
             regimenItem.addProperty("name", item.getRegimen().getName());

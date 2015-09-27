@@ -27,7 +27,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -99,9 +98,9 @@ public class StockMovementPresenter implements Presenter {
             public void call(Subscriber<? super List<StockMovementViewModel>> subscriber) {
                 try {
 
-                    List<StockMovementViewModel> list = from(stockRepository.listLastFive(stockCard.getId())).transform(new Function<StockMovementItem, StockMovementViewModel>() {
+                    List<StockMovementViewModel> list = from(stockRepository.listLastFive(stockCard.getId())).transform(new Function<StockCard.StockMovementItem, StockMovementViewModel>() {
                         @Override
-                        public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
+                        public StockMovementViewModel apply(StockCard.StockMovementItem stockMovementItem) {
                             return new StockMovementViewModel(stockMovementItem);
                         }
                     }).toList();
@@ -125,7 +124,7 @@ public class StockMovementPresenter implements Presenter {
     }
 
 
-    private void saveStockMovement(StockMovementItem stockMovementItem) throws LMISException {
+    private void saveStockMovement(StockCard.StockMovementItem stockMovementItem) throws LMISException {
         stockRepository.addStockMovement(stockCard, stockMovementItem);
     }
 

@@ -24,7 +24,7 @@ import android.content.Context;
 import com.google.inject.Inject;
 
 import org.openlmis.core.exceptions.LMISException;
-import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
@@ -78,9 +78,9 @@ public class StockMovementHistoryPresenter implements Presenter {
             @Override
             public void call(Subscriber<? super List<StockMovementViewModel>> subscriber) {
                 try {
-                    List<StockMovementViewModel> list = from(stockRepository.queryStockItemsHistory(stockCardId, startIndex, MAXROWS)).transform(new Function<StockMovementItem, StockMovementViewModel>() {
+                    List<StockMovementViewModel> list = from(stockRepository.queryStockItemsHistory(stockCardId, startIndex, MAXROWS)).transform(new Function<StockCard.StockMovementItem, StockMovementViewModel>() {
                         @Override
-                        public StockMovementViewModel apply(StockMovementItem stockMovementItem) {
+                        public StockMovementViewModel apply(StockCard.StockMovementItem stockMovementItem) {
                             return new StockMovementViewModel(stockMovementItem);
                         }
                     }).toList();

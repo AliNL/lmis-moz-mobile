@@ -27,7 +27,6 @@ import org.openlmis.core.R;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.ProductRepository;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.View;
@@ -160,23 +159,23 @@ public class InventoryPresenter implements Presenter {
     }
 
 
-    protected StockMovementItem calculateAdjustment(StockCardViewModel model) {
+    protected StockCard.StockMovementItem calculateAdjustment(StockCardViewModel model) {
         long inventory = Long.parseLong(model.getQuantity());
         long stockOnHand = model.getStockOnHand();
 
-        StockMovementItem item = new StockMovementItem();
+        StockCard.StockMovementItem item = new StockCard.StockMovementItem();
         item.setMovementDate(new Date());
         item.setMovementQuantity(Math.abs(inventory - stockOnHand));
 
         if (inventory > stockOnHand) {
             item.setReason(context.getResources().getString(R.string.physical_inventory_positive));
-            item.setMovementType(StockMovementItem.MovementType.POSITIVE_ADJUST);
+            item.setMovementType(StockCard.StockMovementItem.MovementType.POSITIVE_ADJUST);
         } else if (inventory < stockOnHand) {
             item.setReason(context.getResources().getString(R.string.physical_inventory_negative));
-            item.setMovementType(StockMovementItem.MovementType.NEGATIVE_ADJUST);
+            item.setMovementType(StockCard.StockMovementItem.MovementType.NEGATIVE_ADJUST);
         } else {
             item.setReason(context.getResources().getString(R.string.title_physical_inventory));
-            item.setMovementType(StockMovementItem.MovementType.PHYSICAL_INVENTORY);
+            item.setMovementType(StockCard.StockMovementItem.MovementType.PHYSICAL_INVENTORY);
         }
         return item;
     }

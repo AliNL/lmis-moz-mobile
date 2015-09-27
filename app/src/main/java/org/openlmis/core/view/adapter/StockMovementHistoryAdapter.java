@@ -27,7 +27,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import org.openlmis.core.R;
-import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.view.viewmodel.StockMovementViewModel;
 
 import java.util.List;
@@ -95,7 +95,7 @@ public class StockMovementHistoryAdapter extends BaseAdapter {
 
         setReasonAndFontColor(holder, model);
 
-        if (model.getReceived() != null || model.getMovementType() == StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
+        if (model.getReceived() != null || model.getMovementType() == StockCard.StockMovementItem.MovementType.PHYSICAL_INVENTORY) {
             setFontColorToRed(holder);
         }
     }

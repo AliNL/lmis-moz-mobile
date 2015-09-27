@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 import org.openlmis.core.R;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
@@ -62,7 +62,7 @@ public class MMIARnrForm extends LinearLayout {
         rightViewGroup = (ViewGroup) container.findViewById(R.id.rnr_from_list);
     }
 
-    public void initView(ArrayList<RnrFormItem> list) {
+    public void initView(ArrayList<RnRForm.RnrFormItem> list) {
         addHeaderView();
         addItemView(list);
     }
@@ -73,7 +73,7 @@ public class MMIARnrForm extends LinearLayout {
         setItemSize(leftHeaderView, rightHeaderView);
     }
 
-    private void addItemView(ArrayList<RnrFormItem> rnrFormItemList) {
+    private void addItemView(ArrayList<RnRForm.RnrFormItem> rnrFormItemList) {
         initRnrFormItemConfigList();
         addViewByMedicineType(rnrFormItemList, Product.MEDICINE_TYPE_ADULT);
         addDividerView(Product.MEDICINE_TYPE_ADULT);
@@ -85,10 +85,10 @@ public class MMIARnrForm extends LinearLayout {
         addDividerView(Product.MEDICINE_TYPE_OTHER);
     }
 
-    private void addViewByMedicineType(ArrayList<RnrFormItem> dataList, String medicineTypeName) {
+    private void addViewByMedicineType(ArrayList<RnRForm.RnrFormItem> dataList, String medicineTypeName) {
         List<String> fnms = rnrFormItemConfigList.get(medicineTypeName);
         for (String fnm : fnms) {
-            for (RnrFormItem item : dataList) {
+            for (RnRForm.RnrFormItem item : dataList) {
                 if (fnm.equals(item.getProduct().getCode())) {
                     View leftView = addLeftView(item, false, medicineTypeName);
                     ViewGroup rightView = addRightView(item, false);
@@ -162,7 +162,7 @@ public class MMIARnrForm extends LinearLayout {
         return addLeftView(null, true, null);
     }
 
-    private View addLeftView(RnrFormItem item, boolean isHeaderView, String medicineType) {
+    private View addLeftView(RnRForm.RnrFormItem item, boolean isHeaderView, String medicineType) {
         View view = inflaterLeftView();
         TextView tvPrimaryName = (TextView) view.findViewById(R.id.tv_primary_name);
         if (isHeaderView) {
@@ -200,7 +200,7 @@ public class MMIARnrForm extends LinearLayout {
         return addRightView(null, true);
     }
 
-    private ViewGroup addRightView(RnrFormItem item, boolean isHeaderView) {
+    private ViewGroup addRightView(RnRForm.RnrFormItem item, boolean isHeaderView) {
         ViewGroup inflate = inflateRightView();
 
         TextView tvIssuedUnit = (TextView) inflate.findViewById(R.id.tv_issued_unit);

@@ -29,7 +29,6 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.repository.StockRepository;
 import org.openlmis.core.view.viewmodel.StockCardViewModel;
 import org.robolectric.RuntimeEnvironment;
@@ -102,9 +101,9 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         StockCardViewModel model = new StockCardViewModel(stockCard);
         model.setQuantity("120");
 
-        StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
+        StockCard.StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
 
-        assertThat(item.getMovementType(), is(StockMovementItem.MovementType.POSITIVE_ADJUST));
+        assertThat(item.getMovementType(), is(StockCard.StockMovementItem.MovementType.POSITIVE_ADJUST));
         assertThat(item.getMovementQuantity(), is(20L));
     }
 
@@ -113,9 +112,9 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         StockCardViewModel model = new StockCardViewModel(stockCard);
         model.setQuantity("80");
 
-        StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
+        StockCard.StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
 
-        assertThat(item.getMovementType(), is(StockMovementItem.MovementType.NEGATIVE_ADJUST));
+        assertThat(item.getMovementType(), is(StockCard.StockMovementItem.MovementType.NEGATIVE_ADJUST));
         assertThat(item.getMovementQuantity(), is(20L));
     }
 
@@ -126,9 +125,9 @@ public class InventoryPresenterTest extends LMISRepositoryUnitTest {
         StockCardViewModel model = new StockCardViewModel(stockCard);
         model.setQuantity("100");
 
-        StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
+        StockCard.StockMovementItem item = inventoryPresenter.calculateAdjustment(model);
 
-        assertThat(item.getMovementType(), is(StockMovementItem.MovementType.PHYSICAL_INVENTORY));
+        assertThat(item.getMovementType(), is(StockCard.StockMovementItem.MovementType.PHYSICAL_INVENTORY));
         assertThat(item.getMovementQuantity(), is(0L));
     }
 

@@ -28,7 +28,7 @@ import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
-import org.openlmis.core.model.RegimenItem;
+import org.openlmis.core.model.Regimen;
 import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.repository.MMIARepository;
 import org.openlmis.core.model.repository.ProgramRepository;
@@ -130,7 +130,7 @@ public class MMIAFormPresenter implements Presenter {
         return form;
     }
 
-    public void completeMMIA(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
+    public void completeMMIA(ArrayList<Regimen.RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
         form.setRegimenItemListWrapper(regimenItemList);
         form.setBaseInfoItemListWrapper(baseInfoItemList);
         form.setComments(comments);
@@ -154,7 +154,7 @@ public class MMIAFormPresenter implements Presenter {
         return RnRForm.calculateTotalRegimenAmount(form.getRegimenItemListWrapper()) == mmiaRepository.getTotalPatients(form);
     }
 
-    public void saveDraftForm(ArrayList<RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
+    public void saveDraftForm(ArrayList<Regimen.RegimenItem> regimenItemList, ArrayList<BaseInfoItem> baseInfoItemList, String comments) {
         form.setRegimenItemListWrapper(regimenItemList);
         form.setBaseInfoItemListWrapper(baseInfoItemList);
         form.setComments(comments);

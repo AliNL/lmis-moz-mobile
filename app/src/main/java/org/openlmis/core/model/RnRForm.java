@@ -52,9 +52,9 @@ public class RnRForm extends BaseModel {
     private ArrayList<RnrFormItem> rnrFormItemListWrapper;
 
     @ForeignCollectionField()
-    private ForeignCollection<RegimenItem> regimenItemList;
+    private ForeignCollection<Regimen.RegimenItem> regimenItemList;
 
-    private ArrayList<RegimenItem> regimenItemListWrapper;
+    private ArrayList<Regimen.RegimenItem> regimenItemListWrapper;
 
     @ForeignCollectionField()
     private ForeignCollection<BaseInfoItem> baseInfoItemList;
@@ -102,9 +102,9 @@ public class RnRForm extends BaseModel {
         return rnrForm;
     }
 
-    public static long calculateTotalRegimenAmount(Collection<RegimenItem> list) {
+    public static long calculateTotalRegimenAmount(Collection<Regimen.RegimenItem> list) {
         long totalRegimenNumber = 0;
-        for (RegimenItem item : list) {
+        for (Regimen.RegimenItem item : list) {
             if (item.getAmount() != null) {
                 totalRegimenNumber += item.getAmount();
             }
@@ -127,10 +127,41 @@ public class RnRForm extends BaseModel {
         return baseInfoItemListWrapper;
     }
 
-    public ArrayList<RegimenItem> getRegimenItemListWrapper() {
+    public ArrayList<Regimen.RegimenItem> getRegimenItemListWrapper() {
         if (regimenItemListWrapper == null) {
             regimenItemListWrapper = new ArrayList(regimenItemList);
         }
         return regimenItemListWrapper;
+    }
+
+    @Getter
+    @Setter
+    @DatabaseTable(tableName = "rnr_form_items")
+    public static class RnrFormItem extends BaseModel{
+        @DatabaseField(foreign = true, foreignAutoRefresh = true)
+        private Product product;
+
+        @DatabaseField(foreign = true, foreignAutoRefresh = true)
+        private RnRForm form;
+
+        @DatabaseField
+        private long initialAmount;
+        @DatabaseField
+        private long received;
+        @DatabaseField
+        private long issued;
+        @DatabaseField
+        private long adjustment;
+        @DatabaseField
+        private long inventory;
+        @DatabaseField
+        private String validate;
+        @DatabaseField
+        private Long requestAmount;
+        @DatabaseField
+        private Long approvedAmount;
+        @DatabaseField
+        private long calculatedOrderQuantity;
+
     }
 }

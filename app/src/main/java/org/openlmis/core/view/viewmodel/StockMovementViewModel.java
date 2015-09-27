@@ -20,7 +20,7 @@ package org.openlmis.core.view.viewmodel;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.openlmis.core.model.StockMovementItem;
+import org.openlmis.core.model.StockCard;
 import org.openlmis.core.utils.DateUtil;
 
 import java.text.ParseException;
@@ -41,10 +41,10 @@ public class StockMovementViewModel {
     String issued;
     String stockExistence;
 
-    StockMovementItem.MovementType movementType;
+    StockCard.StockMovementItem.MovementType movementType;
     boolean isDraft = true;
 
-    public StockMovementViewModel(StockMovementItem item) {
+    public StockMovementViewModel(StockCard.StockMovementItem item) {
         movementDate = DateUtil.formatDate(item.getMovementDate());
         documentNo = item.getDocumentNumber();
         reason = item.getReason();
@@ -69,8 +69,8 @@ public class StockMovementViewModel {
         stockExistence = String.valueOf(item.getStockOnHand());
     }
 
-    public StockMovementItem convertViewToModel() {
-        StockMovementItem stockMovementItem = new StockMovementItem();
+    public StockCard.StockMovementItem convertViewToModel() {
+        StockCard.StockMovementItem stockMovementItem = new StockCard.StockMovementItem();
         stockMovementItem.setStockOnHand(Long.parseLong(getStockExistence()));
         stockMovementItem.setReason(getReason());
         stockMovementItem.setDocumentNumber(getDocumentNo());

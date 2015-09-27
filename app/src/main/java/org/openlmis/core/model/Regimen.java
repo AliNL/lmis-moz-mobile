@@ -42,4 +42,19 @@ public class Regimen extends BaseModel {
 
     @DatabaseField
     private RegimeType type;
+
+    @Getter
+    @Setter
+    @DatabaseTable(tableName = "regime_items")
+    public static class RegimenItem extends BaseModel{
+
+        @DatabaseField(foreign = true, foreignAutoRefresh = true)
+        private RnRForm form;
+
+        @DatabaseField(foreign = true, foreignAutoRefresh = true)
+        private Regimen regimen;
+
+        @DatabaseField
+        private Long amount;
+    }
 }

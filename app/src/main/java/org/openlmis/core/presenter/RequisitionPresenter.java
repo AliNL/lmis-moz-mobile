@@ -29,7 +29,6 @@ import org.openlmis.core.exceptions.PeriodNotUniqueException;
 import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.View;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -114,9 +113,9 @@ public class RequisitionPresenter implements Presenter {
         if (rnRForm == null) {
             loadRnrForm(formId);
         }
-        return from(rnRForm.getRnrFormItemList()).transform(new Function<RnrFormItem, RequisitionFormItemViewModel>() {
+        return from(rnRForm.getRnrFormItemList()).transform(new Function<RnRForm.RnrFormItem, RequisitionFormItemViewModel>() {
             @Override
-            public RequisitionFormItemViewModel apply(RnrFormItem item) {
+            public RequisitionFormItemViewModel apply(RnRForm.RnrFormItem item) {
                 return new RequisitionFormItemViewModel(item);
             }
         }).toList();
@@ -183,7 +182,7 @@ public class RequisitionPresenter implements Presenter {
     }
 
     private void setRnrFormAmount() {
-        ArrayList<RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
+        ArrayList<RnRForm.RnrFormItem> rnrFormItemListWrapper = rnRForm.getRnrFormItemListWrapper();
         for (int i = 0; i < rnrFormItemListWrapper.size(); i++) {
             String requestAmount = requisitionFormItemViewModelList.get(i).getRequestAmount();
             if (!TextUtils.isEmpty(requestAmount)) {

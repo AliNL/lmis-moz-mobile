@@ -11,7 +11,6 @@ import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
     public void shouldQueryListForLowStockByProductId() throws LMISException {
 
         RnRForm form = new RnRForm();
-        List<RnrFormItem> rnrFormItemList = new ArrayList<>();
+        List<RnRForm.RnrFormItem> rnrFormItemList = new ArrayList<>();
 
         Program program = new Program();
         program.setProgramCode("1");
@@ -56,7 +55,7 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
 
         rnrFormRepository.create(form);
 
-        List<RnrFormItem> rnrFormItemListFromDB = rnrFormItemRepository.queryListForLowStockByProductId(product);
+        List<RnRForm.RnrFormItem> rnrFormItemListFromDB = rnrFormItemRepository.queryListForLowStockByProductId(product);
 
         assertThat(rnrFormItemListFromDB.size(), is(3));
 
@@ -66,8 +65,8 @@ public class RnrFormItemRepositoryTest extends LMISRepositoryUnitTest {
     }
 
     @NonNull
-    private RnrFormItem getRnrFormItem(RnRForm form, Product product, long inventory) {
-        RnrFormItem rnrFormItem = new RnrFormItem();
+    private RnRForm.RnrFormItem getRnrFormItem(RnRForm form, Product product, long inventory) {
+        RnRForm.RnrFormItem rnrFormItem = new RnRForm.RnrFormItem();
         rnrFormItem.setForm(form);
         rnrFormItem.setProduct(product);
         rnrFormItem.setInventory(inventory);

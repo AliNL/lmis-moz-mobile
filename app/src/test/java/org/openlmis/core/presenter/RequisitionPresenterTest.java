@@ -31,7 +31,6 @@ import org.openlmis.core.exceptions.ViewNotMatchException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.repository.VIARepository;
 import org.openlmis.core.view.activity.RequisitionActivity;
 import org.openlmis.core.view.viewmodel.RequisitionFormItemViewModel;
@@ -121,13 +120,13 @@ public class RequisitionPresenterTest {
         verify(viaRepository, never()).initVIA();
     }
 
-    private RnrFormItem createRnrFormItem(int i) {
+    private RnRForm.RnrFormItem createRnrFormItem(int i) {
         Program program = new Program();
         program.setProgramCode("1");
         Product product = new Product();
         product.setProgram(program);
         product.setId(1);
-        RnrFormItem rnrFormItem = new RnrFormItem();
+        RnRForm.RnrFormItem rnrFormItem = new RnRForm.RnrFormItem();
         rnrFormItem.setInventory(1000);
         rnrFormItem.setIssued(i);
         rnrFormItem.setProduct(product);

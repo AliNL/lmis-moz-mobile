@@ -28,7 +28,6 @@ import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
     StockRepository stockRepository;
     ProductRepository productRepository;
     Product product;
-    private StockMovementItem stockMovementItem;
+    private StockCard.StockMovementItem stockMovementItem;
     private StockCard stockCard;
 
     @Before
@@ -62,14 +61,14 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
         productRepository.create(product);
 
-        stockMovementItem = new StockMovementItem();
+        stockMovementItem = new StockCard.StockMovementItem();
 
         stockCard = new StockCard();
 
         stockMovementItem.setStockCard(stockCard);
         stockMovementItem.setMovementQuantity(10L);
         stockMovementItem.setStockOnHand(100L);
-        stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        stockMovementItem.setMovementType(StockCard.StockMovementItem.MovementType.RECEIVE);
         stockMovementItem.setDocumentNumber("XXX123456");
         stockMovementItem.setReason("some reason");
         stockMovementItem.setMovementDate(new Date());
@@ -114,8 +113,8 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
 
     @Test
     public void shouldGetCorrectDataAfterSavedStockMovementItem() throws Exception {
-        List<StockMovementItem> stockMovementItems = stockRepository.listLastFive(stockCard.getId());
-        StockMovementItem stockMovementItemActual = stockMovementItems.get(stockMovementItems.size() - 1);
+        List<StockCard.StockMovementItem> stockMovementItems = stockRepository.listLastFive(stockCard.getId());
+        StockCard.StockMovementItem stockMovementItemActual = stockMovementItems.get(stockMovementItems.size() - 1);
 
         assertEquals(stockMovementItem.getId(), stockMovementItemActual.getId());
         assertEquals(stockMovementItem.getMovementQuantity(), stockMovementItemActual.getMovementQuantity());
@@ -131,14 +130,14 @@ public class StockRepositoryTest extends LMISRepositoryUnitTest {
         stockCard.setStockOnHand(100L);
         stockMovementItem.setStockOnHand(-1);
         stockMovementItem.setMovementQuantity(50L);
-        stockMovementItem.setMovementType(StockMovementItem.MovementType.RECEIVE);
+        stockMovementItem.setMovementType(StockCard.StockMovementItem.MovementType.RECEIVE);
 
         stockRepository.addStockMovement(stockCard, stockMovementItem);
         assertThat(stockMovementItem.getStockOnHand(), is(150L));
 
         stockCard.setStockOnHand(100L);
         stockMovementItem.setStockOnHand(-1);
-        stockMovementItem.setMovementType(StockMovementItem.MovementType.ISSUE);
+        stockMovementItem.setMovementType(StockCard.StockMovementItem.MovementType.ISSUE);
         stockRepository.addStockMovement(stockCard, stockMovementItem);
 
         assertThat(stockMovementItem.getStockOnHand(), is(50L));

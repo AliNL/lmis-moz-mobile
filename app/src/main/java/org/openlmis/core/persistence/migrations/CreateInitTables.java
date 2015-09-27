@@ -26,12 +26,9 @@ import com.j256.ormlite.support.ConnectionSource;
 import org.openlmis.core.model.BaseInfoItem;
 import org.openlmis.core.model.Program;
 import org.openlmis.core.model.RnRForm;
-import org.openlmis.core.model.RnrFormItem;
 import org.openlmis.core.model.Product;
 import org.openlmis.core.model.Regimen;
-import org.openlmis.core.model.RegimenItem;
 import org.openlmis.core.model.StockCard;
-import org.openlmis.core.model.StockMovementItem;
 import org.openlmis.core.model.User;
 import org.openlmis.core.persistence.Migration;
 
@@ -47,12 +44,12 @@ public class CreateInitTables implements Migration {
             createTable(connectionSource, Program.class);
             createTable(connectionSource, Product.class);
             createTable(connectionSource, StockCard.class);
-            createTable(connectionSource, StockMovementItem.class);
+            createTable(connectionSource, StockCard.StockMovementItem.class);
             createTable(connectionSource, RnRForm.class);
             createTable(connectionSource, BaseInfoItem.class);
-            createTable(connectionSource, RnrFormItem.class);
+            createTable(connectionSource, RnRForm.RnrFormItem.class);
             createTable(connectionSource, Regimen.class);
-            createTable(connectionSource, RegimenItem.class);
+            createTable(connectionSource, Regimen.RegimenItem.class);
 
         } catch (SQLException e) {
             e.printStackTrace();

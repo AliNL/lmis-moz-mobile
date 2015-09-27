@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.openlmis.core.LMISTestRunner;
 import org.openlmis.core.exceptions.LMISException;
 import org.openlmis.core.model.Product;
-import org.openlmis.core.model.RnrFormItem;
+import org.openlmis.core.model.RnRForm;
 import org.openlmis.core.model.StockCard;
 import org.openlmis.core.model.repository.RnrFormItemRepository;
 import org.robolectric.RuntimeEnvironment;
@@ -63,7 +63,7 @@ public class PresenterTest {
 
     @Test
     public void shouldGetNormalLevelWhenSOHGreaterThanAvg() throws LMISException {
-        List<RnrFormItem> rnrFormItemList = new ArrayList<>();
+        List<RnRForm.RnrFormItem> rnrFormItemList = new ArrayList<>();
 
         int issued = 100;
         rnrFormItemList.add(getRnrFormItem(issued));
@@ -83,7 +83,7 @@ public class PresenterTest {
 
     @Test
     public void shouldGetLowLevelWhenSOHGreaterThanAvg() throws LMISException {
-        List<RnrFormItem> rnrFormItemList = new ArrayList<>();
+        List<RnRForm.RnrFormItem> rnrFormItemList = new ArrayList<>();
 
         int issued = 100;
         rnrFormItemList.add(getRnrFormItem(issued));
@@ -102,7 +102,7 @@ public class PresenterTest {
 
     @Test
     public void shouldGetStockOutLevelWhenSOHGreaterThanAvg() throws LMISException {
-        List<RnrFormItem> rnrFormItemList = new ArrayList<>();
+        List<RnRForm.RnrFormItem> rnrFormItemList = new ArrayList<>();
 
         int issued = 100;
         rnrFormItemList.add(getRnrFormItem(issued));
@@ -120,8 +120,8 @@ public class PresenterTest {
     }
 
     @NonNull
-    private RnrFormItem getRnrFormItem(long issued) {
-        RnrFormItem rnrFormItem = new RnrFormItem();
+    private RnRForm.RnrFormItem getRnrFormItem(long issued) {
+        RnRForm.RnrFormItem rnrFormItem = new RnRForm.RnrFormItem();
         rnrFormItem.setInventory(10);
         rnrFormItem.setIssued(issued);
         return rnrFormItem;
